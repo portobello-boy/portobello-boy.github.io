@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Project - GoCAN | Portobello Blog</title>
+
+<meta name="keywords" content="project, golang" />
+<meta name="description" content="Hey everyone, welcome to the first post here.
+One of the projects I&rsquo;ve been working on recently is what I called &ldquo;GoCAN&quot;. It&rsquo;s an implementation of a Content Addressable Network, described here, which I&rsquo;ve been working on with a friend of mine.
+What is a CAN? A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network.">
+<meta name="author" content="Daniel Millson">
+<link rel="canonical" href="https://portobello-boy.github.io/post/project-gocan/" />
+<link href="https://portobello-boy.github.io/assets/css/stylesheet.min.c67f61ce2add05cf1690a03e10f394ed97d680c36fc4d7e53203318142a5ab6c.css" integrity="sha256-xn9hzirdBc8WkKA&#43;EPOU7ZfWgMNvxNflMgMxgUKlq2w=" rel="preload stylesheet"
+    as="style">
+
+<link rel="icon" href="https://portobello-boy.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://portobello-boy.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://portobello-boy.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://portobello-boy.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://portobello-boy.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.68.3" />
+
+
+<meta property="og:title" content="Project - GoCAN" />
+<meta property="og:description" content="Hey everyone, welcome to the first post here.
+One of the projects I&rsquo;ve been working on recently is what I called &ldquo;GoCAN&quot;. It&rsquo;s an implementation of a Content Addressable Network, described here, which I&rsquo;ve been working on with a friend of mine.
+What is a CAN? A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://portobello-boy.github.io/post/project-gocan/" />
+<meta property="article:published_time" content="2020-12-26T17:10:36-05:00" />
+<meta property="article:modified_time" content="2020-12-26T17:10:36-05:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Project - GoCAN"/>
+<meta name="twitter:description" content="Hey everyone, welcome to the first post here.
+One of the projects I&rsquo;ve been working on recently is what I called &ldquo;GoCAN&quot;. It&rsquo;s an implementation of a Content Addressable Network, described here, which I&rsquo;ve been working on with a friend of mine.
+What is a CAN? A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network."/>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Project - GoCAN",
+  "name": "Project - GoCAN",
+  "description": "Hey everyone, welcome to the first post here.\nOne of the projects I\u0026amp;rsquo;ve been working on recently is what I called \u0026amp;ldquo;GoCAN\u0026amp;quot;. It\u0026amp;rsquo;s an implementation of a Content …",
+  "keywords": [
+    "project", "golang"
+  ],
+  "articleBody": "Hey everyone, welcome to the first post here.\nOne of the projects I’ve been working on recently is what I called “GoCAN\". It’s an implementation of a Content Addressable Network, described here, which I’ve been working on with a friend of mine.\nWhat is a CAN? A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network. This distrubuted hash table is built to be scalable, allowing many different members to join the network and host data.\nManaging Data Data in a CAN is hashed to an n-dimensional Cartesian coordinate space, normalized in the range [0, 1) in any dimension. Our rudimentary implementation involves key-value pairs mapping strings to strings. The key string is hashed to an n-dimensional point, so that if someone were to search in the CAN using that key, they would retrieve the value string from the original insert.\nAny operations done to data, whether insert, updating, or deleting, require a key string.\nRouting and CAN Hosts When a CAN is initialized, the host creating the CAN owns the entire coordinate space in which data is stored. Once a separate process (on the same system or otherwise) decides to join the CAN, then it provides a key string which is hashed to a point in the coordinate space. The original CAN host will split the coordinate space and hand over half the region to the joining host, as well as any data that was hashed to that region.\nBecause a CAN is a distributed network, there must be some sort of routing data and requests throughout. If each CAN host were omniscient, then each one would have knowledge of all other hosts in the network. While this is a practical solution for a small network, if this were scaled up to hundreds of systems, then ensuring new systems are acknowledged by all existing hosts would be a difficult task.\nTo address this, each host only knows the information (IP address, listening port, and Cartesian space) about its immediate neighbors. This makes the joining process easier as only neighbors of the splitting CAN host must be updated.\nIf a client requests data from a CAN host that does not own the requested data, then it attempts to route the request to a neighbor whose regional midpoint is closed to point generated from the hashed key of the requested data.\nOur Implementation Our implementation of a CAN is done using Golang, or Go for short. Go is a feature-rich language which makes it easy to create a REST API using some community-written libraries. This was a good excuse for us to explore a new language and see its strengths and weaknesses.\nI had previously implemented a CAN for a project in a network theory class, using C/C++ and defining my own packet types to write over sockets. For this implementation, we decided it would be easier to use HTTP over TCP/IP, since we could leverage existing libraries without worrying about learning how to write over sockets in Go.\n",
+  "wordCount" : "531",
+  "inLanguage": "en",
+  "datePublished": "2020-12-26T17:10:36-05:00",
+  "dateModified": "2020-12-26T17:10:36-05:00",
+  "author":{
+    "@type": "Person",
+    "name": "Daniel Millson"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://portobello-boy.github.io/post/project-gocan/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Portobello Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://portobello-boy.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+
+
+
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+<noscript>
+    <style type="text/css">
+        .theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://portobello-boy.github.io/" accesskey="h" title="Portobello Blog (Alt + H)">Portobello Blog</a>
+            <span class="logo-switches">
+                <span class="theme-toggle" title="(Alt + T)">
+                    <a id="theme-toggle" accesskey="t">
+                        <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </a>
+                </span>
+                
+            </span>
+        </div>
+        <ul class="menu" id="menu" onscroll="menu_on_scroll()">
+            <li>
+                <a href="https://portobello-boy.github.io/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://portobello-boy.github.io/archive/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://portobello-boy.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li></ul>
+    </nav>
+</header>
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <h1 class="post-title">
+      Project - GoCAN
+    </h1>
+    <div class="post-meta">
+
+December 26, 2020&nbsp;·&nbsp;Daniel Millson
+
+    </div>
+  </header> 
+
+  <div class="toc">
+    <details >
+      <summary accesskey="c" title="(Alt + C)">
+        <div class="details">Table of Contents</div>
+      </summary>
+      <blockquote><ul><li>
+        <a href="#what-is-a-can" aria-label="What is a CAN?">What is a CAN?</a><ul>
+            <li>
+        <a href="#managing-data" aria-label="Managing Data">Managing Data</a></li><li>
+        <a href="#routing-and-can-hosts" aria-label="Routing and CAN Hosts">Routing and CAN Hosts</a></li></ul>
+    </li><li>
+        <a href="#our-implementation" aria-label="Our Implementation">Our Implementation</a></li></ul>
+      </blockquote>
+    </details>
+  </div>
+  <div class="post-content">
+<p>Hey everyone, welcome to the first post here.</p>
+<p>One of the projects I&rsquo;ve been working on recently is what I called &ldquo;<a href="https://github.com/portobello-boy/GoCAN">GoCAN</a>&quot;. It&rsquo;s an implementation of a Content Addressable Network, described <a href="https://people.eecs.berkeley.edu/~sylvia/papers/cans.pdf">here</a>, which I&rsquo;ve been working on with a friend of mine.</p>
+<h2 id="what-is-a-can">What is a CAN?<a hidden class="anchor" aria-hidden="true" href="#what-is-a-can">#</a></h2>
+<p>A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network. This distrubuted hash table is built to be scalable, allowing many different members to join the network and host data.</p>
+<h3 id="managing-data">Managing Data<a hidden class="anchor" aria-hidden="true" href="#managing-data">#</a></h3>
+<p>Data in a CAN is hashed to an <em>n</em>-dimensional Cartesian coordinate space, normalized in the range [0, 1) in any dimension. Our rudimentary implementation involves key-value pairs mapping strings to strings. The key string is hashed to an <em>n</em>-dimensional point, so that if someone were to search in the CAN using that key, they would retrieve the value string from the original insert.</p>
+<p>Any operations done to data, whether insert, updating, or deleting, require a key string.</p>
+<h3 id="routing-and-can-hosts">Routing and CAN Hosts<a hidden class="anchor" aria-hidden="true" href="#routing-and-can-hosts">#</a></h3>
+<p>When a CAN is initialized, the host creating the CAN owns the entire coordinate space in which data is stored. Once a separate process (on the same system or otherwise) decides to join the CAN, then it provides a key string which is hashed to a point in the coordinate space. The original CAN host will split the coordinate space and hand over half the region to the joining host, as well as any data that was hashed to that region.</p>
+<p>Because a CAN is a distributed network, there must be some sort of routing data and requests throughout. If each CAN host were omniscient, then each one would have knowledge of all other hosts in the network. While this is a practical solution for a small network, if this were scaled up to hundreds of systems, then ensuring new systems are acknowledged by all existing hosts would be a difficult task.</p>
+<p>To address this, each host only knows the information (IP address, listening port, and Cartesian space) about its immediate neighbors. This makes the joining process easier as only neighbors of the splitting CAN host must be updated.</p>
+<p>If a client requests data from a CAN host that does not own the requested data, then it attempts to route the request to a neighbor whose regional midpoint is closed to point generated from the hashed key of the requested data.</p>
+<h2 id="our-implementation">Our Implementation<a hidden class="anchor" aria-hidden="true" href="#our-implementation">#</a></h2>
+<p>Our implementation of a CAN is done using Golang, or Go for short. Go is a feature-rich language which makes it easy to create a REST API using some community-written libraries. This was a good excuse for us to explore a new language and see its strengths and weaknesses.</p>
+<p>I had previously implemented a CAN for a project in a network theory class, using C/C++ and defining my own packet types to write over sockets. For this implementation, we decided it would be easier to use HTTP over TCP/IP, since we could leverage existing libraries without worrying about learning how to write over sockets in Go.</p>
+
+</div>
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://portobello-boy.github.io/tags/golang/">golang</a></li>
+      <li><a href="https://portobello-boy.github.io/tags/project/">project</a></li>
+    </ul>
+  </footer>
+</article>
+    </main><footer class="footer">
+    <span>&copy; 2020 <a href="https://portobello-boy.github.io/">Portobello Blog</a></span>
+    <span>&middot;</span>
+    <span>Powered by <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a></span>
+    <span>&middot;</span>
+    <span>Theme <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a></span>
+</footer>
+<a href="#top">
+    <button class="top-link" id="top-link" type="button" aria-label="go to top" title="Go to Top (Alt + G)"
+        accesskey="g">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6">
+            <path d="M12 6H0l6-6z" />
+        </svg>
+    </button>
+</a>
+
+
+
+<script defer src="https://portobello-boy.github.io/assets/js/highlight.min.27cd435cc9ed6abb4b496581b151804f79f366c412620272bb94e2f5f598ebcc.js" integrity="sha256-J81DXMntartLSWWBsVGAT3nzZsQSYgJyu5Ti9fWY68w="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<script>
+    window.onload = function () {
+        if (localStorage.getItem("menu-scroll-position")) {
+            document.getElementById('menu').scrollLeft = localStorage.getItem("menu-scroll-position");
+        }
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                behavior: "smooth"
+            });
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.replaceState(null, null, `#${id}`);
+            }
+        });
+    });
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+    function menu_on_scroll() {
+        localStorage.setItem("menu-scroll-position", document.getElementById('menu').scrollLeft);
+    }
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+</body>
+
+</html>

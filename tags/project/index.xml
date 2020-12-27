@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>project on Portobello Blog</title>
+    <link>https://portobello-boy.github.io/tags/project/</link>
+    <description>Recent content in project on Portobello Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 26 Dec 2020 17:10:36 -0500</lastBuildDate>
+    
+	<atom:link href="https://portobello-boy.github.io/tags/project/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Project - GoCAN</title>
+      <link>https://portobello-boy.github.io/post/project-gocan/</link>
+      <pubDate>Sat, 26 Dec 2020 17:10:36 -0500</pubDate>
+      
+      <guid>https://portobello-boy.github.io/post/project-gocan/</guid>
+      <description>Hey everyone, welcome to the first post here.
+One of the projects I&amp;rsquo;ve been working on recently is what I called &amp;ldquo;GoCAN&amp;quot;. It&amp;rsquo;s an implementation of a Content Addressable Network, described here, which I&amp;rsquo;ve been working on with a friend of mine.
+What is a CAN? A Content Addressable Network is a network of systems which store a set of content-addressable data. What that means is the data in the network is stored in a distributed hash table, and the data is partitioned between different systems in the network.</description>
+    </item>
+    
+  </channel>
+</rss>
